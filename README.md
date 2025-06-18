@@ -55,7 +55,7 @@ Look at one of the following topics to learn more about Laravel Dotenv Editor:
 You can install this package through [Composer](https://getcomposer.org). At the root of your application directory, run the following command (in any terminal client):
 
 ```shell
-$ composer require jackiedo/dotenv-editor
+$ composer require koel/dotenv-editor
 ```
 
 ## Configuration
