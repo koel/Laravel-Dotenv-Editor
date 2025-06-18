@@ -1,4 +1,9 @@
 # Laravel Dotenv Editor
+
+> [!IMPORTANT]
+> This is a fork from [JackieDo/Laravel-Dotenv-Editor](https://github.com/JackieDo/Laravel-Dotenv-Editor) with the sole intention of keeping compatibility with newer Laravel versions.
+> Apart from the package name (`koel/dotenv-editor`), everything is maintained as-is.
+
 ![laravel-dotenv-editor](https://cloud.githubusercontent.com/assets/9862115/25982836/029612b2-370a-11e7-82c5-d9146dc914a1.png)
 
 [![Latest Stable Version](https://poser.pugx.org/jackiedo/dotenv-editor/v/stable)](https://packagist.org/packages/jackiedo/dotenv-editor)
