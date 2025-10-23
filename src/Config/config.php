@@ -34,4 +34,33 @@ return [
     */
 
     'alwaysCreateBackupFolder' => false,
+
+
+    /*
+    |----------------------------------------------------------------------
+    | Writer settings
+    |----------------------------------------------------------------------
+    */
+    'writer' => [
+        /*
+        |----------------------------------------------------------------------
+        | End of Line mode
+        |----------------------------------------------------------------------
+        |
+        | 'os' (default) - use PHP_EOL as line separator
+        | 'windows' - use '\r\n' as line separator
+        | 'unix' - use '\n' as line separator
+        */
+        'EOLMode' => 'os',
+
+        /*
+        |----------------------------------------------------------------------
+        | End file with line-break
+        |----------------------------------------------------------------------
+        |
+        | true (default) - add EOL symbol at end of file
+        | false - don't add EOL symbol at end of file
+        */
+        'endsWithLinebreak' => true,
+    ],
 ];
