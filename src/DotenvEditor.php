@@ -119,6 +119,11 @@ class DotenvEditor
         $this->reader = new DotenvReader(new $parser);
         $this->writer = new DotenvWriter(new Formatter);
 
+        $eolMode = $this->config->get('dotenv-editor.writer.EOLMode', 'auto');
+        $this->writer->setEOLMode($eolMode);
+        $endWithEOL = $this->config->get('dotenv-editor.writer.endsWithLinebreak', true);
+        $this->writer->setEndsWithLinebreak($endWithEOL);
+
         self::configBackuping();
         $this->load();
     }

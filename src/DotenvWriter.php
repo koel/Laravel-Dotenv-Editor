@@ -15,6 +15,10 @@ use Jackiedo\DotenvEditor\Exceptions\UnableWriteToFileException;
  */
 class DotenvWriter implements WriterInterface
 {
+    const EOL_MODE_OS = 'os';
+    const EOL_MODE_WINDOWS = 'windows';
+    const EOL_MODE_UNIX = 'unix';
+
     /**
      * The content buffer.
      *
@@ -35,13 +39,33 @@ class DotenvWriter implements WriterInterface
      * @var array
      */
     protected $entryTemplate = [
-        'line'    => null,
-        'type'    => 'empty',
-        'export'  => false,
-        'key'     => '',
-        'value'   => '',
+        'line' => null,
+        'type' => 'empty',
+        'export' => false,
+        'key' => '',
+        'value' => '',
         'comment' => '',
     ];
+
+    /**
+     * EOL mode
+     * 'os' (default) - use PHP_EOL as line separator
+     * 'windows' - use '\r\n' as line separator
+     * 'unix' - use '\n' as line separator
+     *
+     * @var self::STATUS_*
+     */
+    protected $eolMode = self::EOL_MODE_OS;
+
+    /*
+    |----------------------------------------------------------------------
+    | End file with line-break
+    |----------------------------------------------------------------------
+    |
+    | true (default) - add EOL symbol at end of file
+    | false - don't add EOL symbol at end of file
+    */
+    protected $endsWithLinebreak = true;
 
     /**
      * Create a new writer instance.
@@ -103,48 +127,48 @@ class DotenvWriter implements WriterInterface
     public function appendComment(string $comment)
     {
         return $this->appendEntry([
-            'type'    => 'comment',
-            'comment' => (string) $comment,
+            'type' => 'comment',
+            'comment' => (string)$comment,
         ]);
     }
 
     /**
      * Append one setter to buffer.
      *
-     * @param string      $key
+     * @param string $key
      * @param null|string $value
      * @param null|string $comment
-     * @param bool        $export
+     * @param bool $export
      *
      * @return DotenvWriter
      */
     public function appendSetter(string $key, ?string $value = null, ?string $comment = null, bool $export = false)
     {
         return $this->appendEntry([
-            'type'    => 'setter',
-            'export'  => $export,
-            'key'     => (string) $key,
-            'value'   => (string) $value,
-            'comment' => (string) $comment,
+            'type' => 'setter',
+            'export' => $export,
+            'key' => (string)$key,
+            'value' => (string)$value,
+            'comment' => (string)$comment,
         ]);
     }
 
     /**
      * Update the setter data in buffer.
      *
-     * @param string      $key
+     * @param string $key
      * @param null|string $value
      * @param null|string $comment
-     * @param bool        $export
+     * @param bool $export
      *
      * @return DotenvWriter
      */
     public function updateSetter(string $key, ?string $value = null, ?string $comment = null, bool $export = false)
     {
         $data = [
-            'export'  => $export,
-            'value'   => (string) $value,
-            'comment' => (string) $comment,
+            'export' => $export,
+            'value' => (string)$value,
+            'comment' => (string)$comment,
         ];
 
         array_walk($this->buffer, function (&$entry, $index) use ($key, $data) {
@@ -159,7 +183,7 @@ class DotenvWriter implements WriterInterface
     /**
      * Update comment for the setter in buffer.
      *
-     * @param string      $key
+     * @param string $key
      * @param null|string $comment
      *
      * @return DotenvWriter
@@ -167,7 +191,7 @@ class DotenvWriter implements WriterInterface
     public function updateSetterComment(string $key, ?string $comment = null)
     {
         $data = [
-            'comment' => (string) $comment,
+            'comment' => (string)$comment,
         ];
 
         array_walk($this->buffer, function (&$entry, $index) use ($key, $data) {
@@ -183,7 +207,7 @@ class DotenvWriter implements WriterInterface
      * Update export status for the setter in buffer.
      *
      * @param string $key
-     * @param bool   $state
+     * @param bool $state
      *
      * @return DotenvWriter
      */
@@ -231,6 +255,31 @@ class DotenvWriter implements WriterInterface
         file_put_contents($filePath, $this->buildTextContent());
 
         return $this;
+    }
+
+    public function getEOLMode(): string
+    {
+        return $this->eolMode;
+    }
+
+    /**
+     * @param self::STATUS_* $eolMode
+     * @return void
+     */
+    public function setEOLMode(string $eolMode): void
+    {
+        $this->eolMode = $eolMode;
+    }
+
+    public function isEndsWithLinebreak(): bool
+    {
+        return $this->endsWithLinebreak;
+    }
+
+
+    public function setEndsWithLinebreak(bool $endsWithLinebreak): void
+    {
+        $this->endsWithLinebreak = $endsWithLinebreak;
     }
 
     /**
@@ -283,6 +332,17 @@ class DotenvWriter implements WriterInterface
             return '';
         }, $this->buffer);
 
-        return implode(PHP_EOL, $data) . PHP_EOL;
+        $eol = PHP_EOL;
+        switch ($this->eolMode) {
+            case 'windows':
+                $eol = "\r\n";
+                break;
+            case 'unix':
+                $eol = "\n";
+                break;
+
+        }
+
+        return implode($eol, $data) . ($this->endsWithLinebreak ? $eol : '');
     }
 }
