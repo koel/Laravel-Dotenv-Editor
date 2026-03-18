@@ -125,36 +125,28 @@ class FormatterTest extends TestCase
     #[Test]
     public function formatsASetterWithComment(): void
     {
-        $this->assertSame(
-            'APP_KEY=value # This is a comment',
-            $this->formatter->formatSetter('APP_KEY', 'value', 'This is a comment')
-        );
+        $this->assertSame('APP_KEY=value # This is a comment', $this->formatter->formatSetter(
+            'APP_KEY',
+            'value',
+            'This is a comment',
+        ));
     }
 
     #[Test]
     public function quotesEmptyValueWhenCommentPresent(): void
     {
-        $this->assertSame(
-            'APP_KEY="" # A comment',
-            $this->formatter->formatSetter('APP_KEY', '', 'A comment')
-        );
+        $this->assertSame('APP_KEY="" # A comment', $this->formatter->formatSetter('APP_KEY', '', 'A comment'));
     }
 
     #[Test]
     public function formatsASetterWithExport(): void
     {
-        $this->assertSame(
-            'export APP_KEY=value',
-            $this->formatter->formatSetter('APP_KEY', 'value', null, true)
-        );
+        $this->assertSame('export APP_KEY=value', $this->formatter->formatSetter('APP_KEY', 'value', null, true));
     }
 
     #[Test]
     public function formatsASetterWithVariableInterpolation(): void
     {
-        $this->assertSame(
-            'APP_KEY="${DB_HOST}"',
-            $this->formatter->formatSetter('APP_KEY', '${DB_HOST}')
-        );
+        $this->assertSame('APP_KEY="${DB_HOST}"', $this->formatter->formatSetter('APP_KEY', '${DB_HOST}'));
     }
 }

@@ -38,12 +38,15 @@ class DotenvBackupCommand extends Command
      */
     public function fire()
     {
-        $filePath       = $this->stringToType($this->option('filepath'));
-        $this->filePath = (is_string($filePath)) ? base_path($filePath) : null;
+        $filePath = $this->stringToType($this->option('filepath'));
+        $this->filePath = is_string($filePath) ? base_path($filePath) : null;
 
         $this->line('Backing up your file...');
 
-        $backup = $this->editor->load($this->filePath)->backup()->getLatestBackup();
+        $backup = $this->editor
+            ->load($this->filePath)
+            ->backup()
+            ->getLatestBackup();
 
         $this->info("Your file was backed up successfully at path [{$backup['filepath']}].");
     }
@@ -66,7 +69,12 @@ class DotenvBackupCommand extends Command
     protected function getOptions()
     {
         return [
-            ['filepath', null, InputOption::VALUE_OPTIONAL, 'The file path will be backed up. Do not use if you want to backup file .env at root application folder.'],
+            [
+                'filepath',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The file path will be backed up. Do not use if you want to backup file .env at root application folder.',
+            ],
         ];
     }
 }

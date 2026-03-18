@@ -31,7 +31,7 @@ class DotenvEditorServiceProvider extends ServiceProvider implements DeferrableP
          * Loading and publishing package's config.
          */
         $packageConfigPath = __DIR__ . '/Config/config.php';
-        $appConfigPath     = config_path('dotenv-editor.php');
+        $appConfigPath = config_path('dotenv-editor.php');
 
         $this->mergeConfigFrom($packageConfigPath, 'dotenv-editor');
 

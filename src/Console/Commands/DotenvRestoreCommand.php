@@ -65,11 +65,11 @@ class DotenvRestoreCommand extends Command
      */
     protected function transferInputsToProperties()
     {
-        $filePath       = $this->stringToType($this->option('filepath'));
-        $this->filePath = (is_string($filePath)) ? base_path($filePath) : null;
+        $filePath = $this->stringToType($this->option('filepath'));
+        $this->filePath = is_string($filePath) ? base_path($filePath) : null;
 
-        $restorePath       = $this->stringToType($this->option('restore-path'));
-        $this->restorePath = (is_string($restorePath)) ? base_path($restorePath) : null;
+        $restorePath = $this->stringToType($this->option('restore-path'));
+        $this->restorePath = is_string($restorePath) ? base_path($restorePath) : null;
     }
 
     /**
@@ -90,8 +90,18 @@ class DotenvRestoreCommand extends Command
     protected function getOptions()
     {
         return [
-            ['filepath', null, InputOption::VALUE_OPTIONAL, 'The .env file path will be restored. Do not use if you want to restore file .env at root application folder.'],
-            ['restore-path', null, InputOption::VALUE_OPTIONAL, 'The special file path should use to restore. Do not use if you want to restore from latest backup file.'],
+            [
+                'filepath',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The .env file path will be restored. Do not use if you want to restore file .env at root application folder.',
+            ],
+            [
+                'restore-path',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The special file path should use to restore. Do not use if you want to restore from latest backup file.',
+            ],
             ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'],
         ];
     }

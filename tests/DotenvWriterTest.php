@@ -94,8 +94,22 @@ class DotenvWriterTest extends TestCase
     public function updatesOnlyMatchingSetter(): void
     {
         $this->writer->setBuffer([
-            ['line' => 1, 'type' => 'setter', 'export' => false, 'key' => 'APP_KEY', 'value' => 'val1', 'comment' => ''],
-            ['line' => 2, 'type' => 'setter', 'export' => false, 'key' => 'DB_HOST', 'value' => 'val2', 'comment' => ''],
+            [
+                'line' => 1,
+                'type' => 'setter',
+                'export' => false,
+                'key' => 'APP_KEY',
+                'value' => 'val1',
+                'comment' => '',
+            ],
+            [
+                'line' => 2,
+                'type' => 'setter',
+                'export' => false,
+                'key' => 'DB_HOST',
+                'value' => 'val2',
+                'comment' => '',
+            ],
         ]);
         $this->writer->updateSetter('DB_HOST', 'newval', '', false);
         $buffer = $this->writer->getBuffer();
@@ -107,7 +121,14 @@ class DotenvWriterTest extends TestCase
     public function updatesSetterComment(): void
     {
         $this->writer->setBuffer([
-            ['line' => 1, 'type' => 'setter', 'export' => false, 'key' => 'APP_KEY', 'value' => 'val', 'comment' => 'old'],
+            [
+                'line' => 1,
+                'type' => 'setter',
+                'export' => false,
+                'key' => 'APP_KEY',
+                'value' => 'val',
+                'comment' => 'old',
+            ],
         ]);
         $this->writer->updateSetterComment('APP_KEY', 'new comment');
         $buffer = $this->writer->getBuffer();
@@ -129,8 +150,22 @@ class DotenvWriterTest extends TestCase
     public function deletesSetter(): void
     {
         $this->writer->setBuffer([
-            ['line' => 1, 'type' => 'setter', 'export' => false, 'key' => 'APP_KEY', 'value' => 'val1', 'comment' => ''],
-            ['line' => 2, 'type' => 'setter', 'export' => false, 'key' => 'DB_HOST', 'value' => 'val2', 'comment' => ''],
+            [
+                'line' => 1,
+                'type' => 'setter',
+                'export' => false,
+                'key' => 'APP_KEY',
+                'value' => 'val1',
+                'comment' => '',
+            ],
+            [
+                'line' => 2,
+                'type' => 'setter',
+                'export' => false,
+                'key' => 'DB_HOST',
+                'value' => 'val2',
+                'comment' => '',
+            ],
         ]);
         $this->writer->deleteSetter('APP_KEY');
         $buffer = $this->writer->getBuffer();
@@ -155,14 +190,28 @@ class DotenvWriterTest extends TestCase
     public function buildsTextContentFromBuffer(): void
     {
         $this->writer->setBuffer([
-            ['line' => 1, 'type' => 'setter', 'export' => false, 'key' => 'APP_KEY', 'value' => 'value', 'comment' => ''],
+            [
+                'line' => 1,
+                'type' => 'setter',
+                'export' => false,
+                'key' => 'APP_KEY',
+                'value' => 'value',
+                'comment' => '',
+            ],
             ['line' => 2, 'type' => 'empty', 'export' => false, 'key' => '', 'value' => '', 'comment' => ''],
             ['line' => 3, 'type' => 'comment', 'export' => false, 'key' => '', 'value' => '', 'comment' => 'Database'],
-            ['line' => 4, 'type' => 'setter', 'export' => false, 'key' => 'DB_HOST', 'value' => 'localhost', 'comment' => ''],
+            [
+                'line' => 4,
+                'type' => 'setter',
+                'export' => false,
+                'key' => 'DB_HOST',
+                'value' => 'localhost',
+                'comment' => '',
+            ],
         ]);
 
         $text = $this->writer->getBuffer(false);
-        $expected = "APP_KEY=value" . PHP_EOL . "" . PHP_EOL . "# Database" . PHP_EOL . "DB_HOST=localhost" . PHP_EOL;
+        $expected = 'APP_KEY=value' . PHP_EOL . '' . PHP_EOL . '# Database' . PHP_EOL . 'DB_HOST=localhost' . PHP_EOL;
         $this->assertSame($expected, $text);
     }
 
@@ -172,8 +221,22 @@ class DotenvWriterTest extends TestCase
         $tmpFile = tempnam(sys_get_temp_dir(), 'dotenv');
 
         $this->writer->setBuffer([
-            ['line' => 1, 'type' => 'setter', 'export' => false, 'key' => 'APP_KEY', 'value' => 'value', 'comment' => ''],
-            ['line' => 2, 'type' => 'setter', 'export' => true, 'key' => 'DB_HOST', 'value' => 'localhost', 'comment' => 'db host'],
+            [
+                'line' => 1,
+                'type' => 'setter',
+                'export' => false,
+                'key' => 'APP_KEY',
+                'value' => 'value',
+                'comment' => '',
+            ],
+            [
+                'line' => 2,
+                'type' => 'setter',
+                'export' => true,
+                'key' => 'DB_HOST',
+                'value' => 'localhost',
+                'comment' => 'db host',
+            ],
         ]);
 
         $this->writer->saveTo($tmpFile);

@@ -35,11 +35,11 @@ class DotenvWriter implements WriterInterface
      * @var array
      */
     protected $entryTemplate = [
-        'line'    => null,
-        'type'    => 'empty',
-        'export'  => false,
-        'key'     => '',
-        'value'   => '',
+        'line' => null,
+        'type' => 'empty',
+        'export' => false,
+        'key' => '',
+        'value' => '',
         'comment' => '',
     ];
 
@@ -103,7 +103,7 @@ class DotenvWriter implements WriterInterface
     public function appendComment(string $comment)
     {
         return $this->appendEntry([
-            'type'    => 'comment',
+            'type' => 'comment',
             'comment' => (string) $comment,
         ]);
     }
@@ -121,10 +121,10 @@ class DotenvWriter implements WriterInterface
     public function appendSetter(string $key, ?string $value = null, ?string $comment = null, bool $export = false)
     {
         return $this->appendEntry([
-            'type'    => 'setter',
-            'export'  => $export,
-            'key'     => (string) $key,
-            'value'   => (string) $value,
+            'type' => 'setter',
+            'export' => $export,
+            'key' => (string) $key,
+            'value' => (string) $value,
             'comment' => (string) $comment,
         ]);
     }
@@ -142,8 +142,8 @@ class DotenvWriter implements WriterInterface
     public function updateSetter(string $key, ?string $value = null, ?string $comment = null, bool $export = false)
     {
         $data = [
-            'export'  => $export,
-            'value'   => (string) $value,
+            'export' => $export,
+            'value' => (string) $value,
             'comment' => (string) $comment,
         ];
 
@@ -211,9 +211,13 @@ class DotenvWriter implements WriterInterface
      */
     public function deleteSetter(string $key)
     {
-        $this->buffer = array_values(array_filter($this->buffer, function ($entry, $index) use ($key) {
-            return 'setter' != $entry['type'] || $entry['key'] != $key;
-        }, ARRAY_FILTER_USE_BOTH));
+        $this->buffer = array_values(array_filter(
+            $this->buffer,
+            function ($entry, $index) use ($key) {
+                return 'setter' != $entry['type'] || $entry['key'] != $key;
+            },
+            ARRAY_FILTER_USE_BOTH,
+        ));
 
         return $this;
     }
@@ -259,7 +263,7 @@ class DotenvWriter implements WriterInterface
      */
     protected function ensureFileIsWritable($filePath)
     {
-        if ((is_file($filePath) && !is_writable($filePath)) || (!is_file($filePath) && !is_writable(dirname($filePath)))) {
+        if (is_file($filePath) && !is_writable($filePath) || !is_file($filePath) && !is_writable(dirname($filePath))) {
             throw new UnableWriteToFileException(sprintf('Unable to write to the file at %s.', $filePath));
         }
     }
@@ -273,7 +277,12 @@ class DotenvWriter implements WriterInterface
     {
         $data = array_map(function ($entry) {
             if ('setter' == $entry['type']) {
-                return $this->formatter->formatSetter($entry['key'], $entry['value'], $entry['comment'], $entry['export']);
+                return $this->formatter->formatSetter(
+                    $entry['key'],
+                    $entry['value'],
+                    $entry['comment'],
+                    $entry['export'],
+                );
             }
 
             if ('comment' == $entry['type']) {

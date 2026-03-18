@@ -96,11 +96,11 @@ class DotenvEditor
      */
     public function __construct(Container $app, Config $config)
     {
-        $this->app    = $app;
+        $this->app = $app;
         $this->config = $config;
 
-        $this->reader = new DotenvReader(new ParserV3);
-        $this->writer = new DotenvWriter(new Formatter);
+        $this->reader = new DotenvReader(new ParserV3());
+        $this->writer = new DotenvWriter(new Formatter());
 
         self::configBackuping();
         $this->load();
@@ -137,18 +137,18 @@ class DotenvEditor
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | Working with reading
-    |--------------------------------------------------------------------------
-    |
-    | getContent()
-    | getEntries()
-    | getKey()
-    | getKeys()
-    | keyExists()
-    | getValue()
-    |
-    */
+     |--------------------------------------------------------------------------
+     | Working with reading
+     |--------------------------------------------------------------------------
+     |
+     | getContent()
+     | getEntries()
+     | getKey()
+     | getKeys()
+     | keyExists()
+     | getValue()
+     |
+     */
 
     /**
      * Get raw content of file.
@@ -187,9 +187,13 @@ class DotenvEditor
             return $allKeys;
         }
 
-        return array_filter($allKeys, function ($key) use ($keys) {
-            return in_array($key, $keys);
-        }, ARRAY_FILTER_USE_KEY);
+        return array_filter(
+            $allKeys,
+            function ($key) use ($keys) {
+                return in_array($key, $keys);
+            },
+            ARRAY_FILTER_USE_KEY,
+        );
     }
 
     /**
@@ -239,24 +243,24 @@ class DotenvEditor
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | Working with writing
-    |--------------------------------------------------------------------------
-    |
-    | hasChange()
-    | getBuffer()
-    | addEmpty()
-    | addComment()
-    | setKeys()
-    | setKey()
-    | setSetterComment()
-    | clearSetterComment()
-    | setExportSetter()
-    | deleteKeys()
-    | deleteKey()
-    | save()
-    |
-    */
+     |--------------------------------------------------------------------------
+     | Working with writing
+     |--------------------------------------------------------------------------
+     |
+     | hasChange()
+     | getBuffer()
+     | addEmpty()
+     | addComment()
+     | setKeys()
+     | setKey()
+     | setSetterComment()
+     | clearSetterComment()
+     | setExportSetter()
+     | deleteKeys()
+     | deleteKey()
+     | save()
+     |
+     */
 
     /**
      * Determine if the buffer has changed.
@@ -326,23 +330,23 @@ class DotenvEditor
                 }
 
                 $setter = [
-                    'key'   => $index,
+                    'key' => $index,
                     'value' => $setter,
                 ];
             }
 
             if (array_key_exists('key', $setter)) {
-                $key     = (string) $setter['key'];
-                $value   = (string) array_key_exists('value', $setter) ? $setter['value'] : null;
+                $key = (string) $setter['key'];
+                $value = (string) array_key_exists('value', $setter) ? $setter['value'] : null;
                 $comment = array_key_exists('comment', $setter) ? $setter['comment'] : null;
-                $export  = array_key_exists('export', $setter) ? $setter['export'] : null;
+                $export = array_key_exists('export', $setter) ? $setter['export'] : null;
 
                 if (!is_file($this->filePath) || !$this->keyExists($key)) {
                     $this->writer->appendSetter($key, $value, (string) $comment, (bool) $export);
                 } else {
                     $oldInfo = $this->getKeys([$key]);
                     $comment = is_null($comment) ? $oldInfo[$key]['comment'] : (string) $comment;
-                    $export  = is_null($export) ? $oldInfo[$key]['export'] : (bool) $export;
+                    $export = is_null($export) ? $oldInfo[$key]['export'] : (bool) $export;
 
                     $this->writer->updateSetter($key, $value, $comment, $export);
                 }
@@ -472,19 +476,19 @@ class DotenvEditor
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | Working with backups
-    |--------------------------------------------------------------------------
-    |
-    | autoBackup()
-    | backup()
-    | getBackups()
-    | getLatestBackup()
-    | restore()
-    | deleteBackups()
-    | deleteBackup()
-    |
-    */
+     |--------------------------------------------------------------------------
+     | Working with backups
+     |--------------------------------------------------------------------------
+     |
+     | autoBackup()
+     | backup()
+     | getBackups()
+     | getLatestBackup()
+     | restore()
+     | deleteBackups()
+     | deleteBackup()
+     |
+     */
 
     /**
      * Turn automatic backup on or off.
@@ -520,7 +524,7 @@ class DotenvEditor
 
         copy(
             $this->filePath,
-            $this->backupPath . self::BACKUP_FILENAME_PREFIX . date('Y_m_d_His') . self::BACKUP_FILENAME_SUFFIX
+            $this->backupPath . self::BACKUP_FILENAME_PREFIX . date('Y_m_d_His') . self::BACKUP_FILENAME_SUFFIX,
         );
 
         return $this;
@@ -539,15 +543,22 @@ class DotenvEditor
             return $output;
         }
 
-        $filenameRegex = '/^' . preg_quote(self::BACKUP_FILENAME_PREFIX, '/') . '(\d{4})_(\d{2})_(\d{2})_(\d{2})(\d{2})(\d{2})' . preg_quote(self::BACKUP_FILENAME_SUFFIX, '/') . '$/';
-        $backups       = array_filter(array_diff(scandir($this->backupPath), ['..', '.']), function ($backup) use ($filenameRegex) {
+        $filenameRegex =
+            '/^'
+            . preg_quote(self::BACKUP_FILENAME_PREFIX, '/')
+            . '(\d{4})_(\d{2})_(\d{2})_(\d{2})(\d{2})(\d{2})'
+            . preg_quote(self::BACKUP_FILENAME_SUFFIX, '/')
+            . '$/';
+        $backups = array_filter(array_diff(scandir($this->backupPath), ['..', '.']), function ($backup) use (
+            $filenameRegex,
+        ) {
             return preg_match($filenameRegex, $backup);
         });
 
         foreach ($backups as $backup) {
             $output[] = [
-                'filename'   => $backup,
-                'filepath'   => Path::osStyle($this->backupPath . $backup),
+                'filename' => $backup,
+                'filepath' => Path::osStyle($this->backupPath . $backup),
                 'created_at' => preg_replace($filenameRegex, '$1-$2-$3 $4:$5:$6', $backup),
             ];
         }
@@ -578,13 +589,13 @@ class DotenvEditor
             }
         }
 
-        $fileName  = self::BACKUP_FILENAME_PREFIX . date('Y_m_d_His', $latestBackup) . self::BACKUP_FILENAME_SUFFIX;
-        $filePath  = Path::osStyle($this->backupPath . $fileName);
+        $fileName = self::BACKUP_FILENAME_PREFIX . date('Y_m_d_His', $latestBackup) . self::BACKUP_FILENAME_SUFFIX;
+        $filePath = Path::osStyle($this->backupPath . $fileName);
         $createdAt = date('Y-m-d H:i:s', $latestBackup);
 
         return [
-            'filename'   => $fileName,
-            'filepath'   => $filePath,
+            'filename' => $fileName,
+            'filepath' => $filePath,
             'created_at' => $createdAt,
         ];
     }
@@ -739,7 +750,7 @@ class DotenvEditor
 
         if (is_null($this->backupPath)) {
             if (method_exists($this->app, 'storagePath')) {
-                $this->backupPath = ($this->app->storagePath() . '/dotenv-editor/backups');
+                $this->backupPath = $this->app->storagePath() . '/dotenv-editor/backups';
             } else {
                 $this->backupPath = $this->app->basePath() . '/storage/dotenv-editor/backups';
             }
@@ -751,5 +762,4 @@ class DotenvEditor
             $this->createBackupFolder();
         }
     }
-
 }

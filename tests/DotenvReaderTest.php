@@ -97,7 +97,7 @@ class DotenvReaderTest extends TestCase
     #[Test]
     public function includesExportInfoInKeys(): void
     {
-        file_put_contents($this->tmpFile, "export APP_KEY=value");
+        file_put_contents($this->tmpFile, 'export APP_KEY=value');
         $this->reader->load($this->tmpFile);
 
         $keys = $this->reader->keys();

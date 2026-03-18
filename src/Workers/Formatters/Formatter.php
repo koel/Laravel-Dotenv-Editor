@@ -49,7 +49,7 @@ class Formatter implements FormatterInterface
         $comment = rtrim(ltrim((string) $comment, '# '), ' ');
         $comment = preg_replace('/(\r\n|\n|\r)/', ' ', $comment);
 
-        return (strlen($comment) > 0) ? "# {$comment}" : '';
+        return strlen($comment) > 0 ? "# {$comment}" : '';
     }
 
     /**
@@ -64,7 +64,7 @@ class Formatter implements FormatterInterface
      */
     public function formatSetter(string $key, ?string $value = null, ?string $comment = null, bool $export = false)
     {
-        $key   = $this->formatKey($key, $export);
+        $key = $this->formatKey($key, $export);
         $value = $this->formatValue($value, $this->formatComment($comment));
 
         return "{$key}={$value}";
@@ -80,10 +80,10 @@ class Formatter implements FormatterInterface
      */
     protected function formatValue(?string $value, ?string $comment = null)
     {
-        $value       = (string) $value;
-        $comment     = (string) $comment;
-        $hasComment  = strlen($comment) > 0;
-        $forceQuotes = $hasComment && (0 == strlen($value));
+        $value = (string) $value;
+        $comment = (string) $comment;
+        $hasComment = strlen($comment) > 0;
+        $forceQuotes = $hasComment && 0 == strlen($value);
 
         if ($forceQuotes || 1 === preg_match('/[#\s"\'\\\\]|\$\{[a-zA-Z0-9_.]+\}|\\\\n/', $value)) {
             $value = str_replace('\\', '\\\\', $value);

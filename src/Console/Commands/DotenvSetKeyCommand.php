@@ -105,17 +105,17 @@ class DotenvSetKeyCommand extends Command
      */
     protected function transferInputsToProperties()
     {
-        $filePath       = $this->stringToType($this->option('filepath'));
-        $this->filePath = (is_string($filePath)) ? base_path($filePath) : null;
+        $filePath = $this->stringToType($this->option('filepath'));
+        $this->filePath = is_string($filePath) ? base_path($filePath) : null;
 
         $this->forceRestore = $this->option('restore');
 
-        $restorePath       = $this->stringToType($this->option('restore-path'));
-        $this->restorePath = (is_string($restorePath)) ? base_path($restorePath) : null;
+        $restorePath = $this->stringToType($this->option('restore-path'));
+        $this->restorePath = is_string($restorePath) ? base_path($restorePath) : null;
 
-        $this->key       = $this->argument('key');
-        $this->value     = $this->argument('value');
-        $this->comment   = $this->stringToType($this->argument('comment'));
+        $this->key = $this->argument('key');
+        $this->value = $this->argument('value');
+        $this->comment = $this->stringToType($this->argument('comment'));
         $this->exportKey = $this->option('export-key');
     }
 
@@ -129,7 +129,11 @@ class DotenvSetKeyCommand extends Command
         return [
             ['key', InputArgument::REQUIRED, 'Key name will be added or updated.'],
             ['value', InputArgument::OPTIONAL, 'Value want to set for this key.'],
-            ['comment', InputArgument::OPTIONAL, 'Comment want to set for this key. Type "false" to clear comment for exists key.'],
+            [
+                'comment',
+                InputArgument::OPTIONAL,
+                'Comment want to set for this key. Type "false" to clear comment for exists key.',
+            ],
         ];
     }
 
@@ -141,9 +145,24 @@ class DotenvSetKeyCommand extends Command
     protected function getOptions()
     {
         return [
-            ['filepath', null, InputOption::VALUE_OPTIONAL, 'The file path should use to load for working. Do not use if you want to load file .env at root application folder.'],
-            ['restore', 'r', InputOption::VALUE_NONE, 'Restore the loaded file from backup or special file if the loaded file is not found.'],
-            ['restore-path', null, InputOption::VALUE_OPTIONAL, 'The special file path should use to restore from. Do not use if you want to restore from latest backup file.'],
+            [
+                'filepath',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The file path should use to load for working. Do not use if you want to load file .env at root application folder.',
+            ],
+            [
+                'restore',
+                'r',
+                InputOption::VALUE_NONE,
+                'Restore the loaded file from backup or special file if the loaded file is not found.',
+            ],
+            [
+                'restore-path',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The special file path should use to restore from. Do not use if you want to restore from latest backup file.',
+            ],
             ['export-key', 'e', InputOption::VALUE_NONE, 'Leading before key name with "export " command.'],
             ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'],
         ];

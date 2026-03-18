@@ -55,7 +55,10 @@ class DotenvDeleteKeyCommand extends Command
         }
 
         $this->line('Deleting key in your file...');
-        $this->editor->load($this->filePath)->deleteKey($this->key)->save();
+        $this->editor
+            ->load($this->filePath)
+            ->deleteKey($this->key)
+            ->save();
         $this->info("The key [{$this->key}] is deletted successfully.");
     }
 
@@ -68,8 +71,8 @@ class DotenvDeleteKeyCommand extends Command
     {
         $filePath = $this->stringToType($this->option('filepath'));
 
-        $this->filePath = (is_string($filePath)) ? base_path($filePath) : null;
-        $this->key      = $this->argument('key');
+        $this->filePath = is_string($filePath) ? base_path($filePath) : null;
+        $this->key = $this->argument('key');
     }
 
     /**
@@ -92,7 +95,12 @@ class DotenvDeleteKeyCommand extends Command
     protected function getOptions()
     {
         return [
-            ['filepath', null, InputOption::VALUE_OPTIONAL, 'The file path should use to load for working. Do not use if you want to load file .env at root application folder.'],
+            [
+                'filepath',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The file path should use to load for working. Do not use if you want to load file .env at root application folder.',
+            ],
             ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'],
         ];
     }

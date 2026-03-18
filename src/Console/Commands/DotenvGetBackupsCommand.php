@@ -32,7 +32,7 @@ class DotenvGetBackupsCommand extends Command
     public function fire()
     {
         $headers = ['File name', 'File path', 'Created at'];
-        $backups = ($this->option('latest')) ? [$this->editor->getLatestBackup()] : $this->editor->getBackups();
+        $backups = $this->option('latest') ? [$this->editor->getLatestBackup()] : $this->editor->getBackups();
 
         if ($this->option('latest')) {
             $latest = $this->editor->getLatestBackup();
@@ -45,7 +45,7 @@ class DotenvGetBackupsCommand extends Command
             }
         } else {
             $backups = $this->editor->getBackups();
-            $total   = count($backups);
+            $total = count($backups);
         }
 
         $this->line('Loading backup files...');

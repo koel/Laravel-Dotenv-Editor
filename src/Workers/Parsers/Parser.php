@@ -28,17 +28,17 @@ abstract class Parser
         $lines = file($filePath, FILE_IGNORE_NEW_LINES); // The older method
         // $lines = preg_split("/(\r\n|\n|\r)/", rtrim(@file_get_contents($filePath))); // The newer method
 
-        $output          = [];
-        $multiline       = false;
+        $output = [];
+        $multiline = false;
         $multilineBuffer = [];
-        $lineNumber      = 0;
+        $lineNumber = 0;
 
         foreach ($lines as $index => $line) {
             list($multiline, $line, $multilineBuffer) = self::multilineProcess($multiline, $line, $multilineBuffer);
 
             if (!$multiline) {
                 $output[] = [
-                    'line'     => ++$lineNumber,
+                    'line' => ++$lineNumber,
                     'raw_data' => $line,
                 ];
 
@@ -60,10 +60,10 @@ abstract class Parser
     public function parseEntry(string $data)
     {
         $output = [
-            'type'    => 'unknown',
-            'export'  => false,
-            'key'     => '',
-            'value'   => '',
+            'type' => 'unknown',
+            'export' => false,
+            'key' => '',
+            'value' => '',
             'comment' => '',
         ];
 
@@ -74,7 +74,7 @@ abstract class Parser
         }
 
         if ($this->isComment($data)) {
-            $output['type']    = 'comment';
+            $output['type'] = 'comment';
             $output['comment'] = $this->normaliseComment($data);
 
             return $output;
@@ -108,8 +108,8 @@ abstract class Parser
 
             if (self::looksLikeMultilineStop($line, $started)) {
                 $multiline = false;
-                $line      = implode(PHP_EOL, $buffer);
-                $buffer    = [];
+                $line = implode(PHP_EOL, $buffer);
+                $buffer = [];
             }
         }
 
@@ -184,10 +184,10 @@ abstract class Parser
         list($key, $data) = array_map('trim', explode('=', $setter, 2));
 
         $output = [
-            'type'    => 'setter',
-            'export'  => $this->isExportKey($key),
-            'key'     => $this->normaliseKey($key),
-            'value'   => '',
+            'type' => 'setter',
+            'export' => $this->isExportKey($key),
+            'key' => $this->normaliseKey($key),
+            'value' => '',
             'comment' => '',
         ];
 
@@ -289,7 +289,7 @@ abstract class Parser
         return sprintf(
             'Failed to parse dotenv setter value due to %s. Failed at [%s].',
             $cause,
-            strtok($subject, "\n")
+            strtok($subject, "\n"),
         );
     }
 

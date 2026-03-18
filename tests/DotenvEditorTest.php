@@ -27,7 +27,10 @@ class DotenvEditorTest extends TestCase
         mkdir($this->tmpDir . '/backups', 0777, true);
 
         $this->envFile = $this->tmpDir . '/.env';
-        file_put_contents($this->envFile, "APP_NAME=Laravel\nAPP_ENV=local\n# Database\nDB_HOST=127.0.0.1\nDB_PORT=3306\n");
+        file_put_contents(
+            $this->envFile,
+            "APP_NAME=Laravel\nAPP_ENV=local\n# Database\nDB_HOST=127.0.0.1\nDB_PORT=3306\n",
+        );
 
         $this->editor = $this->app->make('dotenv-editor');
         $this->editor->autoBackup(false);
@@ -118,11 +121,7 @@ class DotenvEditorTest extends TestCase
         $this->assertTrue($this->editor->hasChanged());
 
         $buffer = $this->editor->getBuffer();
-        $keys = array_column(
-            array_filter($buffer, fn ($e) => $e['type'] === 'setter'),
-            'value',
-            'key'
-        );
+        $keys = array_column(array_filter($buffer, fn($e) => $e['type'] === 'setter'), 'value', 'key');
         $this->assertSame('new_value', $keys['NEW_KEY']);
     }
 
@@ -131,11 +130,7 @@ class DotenvEditorTest extends TestCase
     {
         $this->editor->setKey('APP_NAME', 'NewApp');
         $buffer = $this->editor->getBuffer();
-        $keys = array_column(
-            array_filter($buffer, fn ($e) => $e['type'] === 'setter'),
-            'value',
-            'key'
-        );
+        $keys = array_column(array_filter($buffer, fn($e) => $e['type'] === 'setter'), 'value', 'key');
         $this->assertSame('NewApp', $keys['APP_NAME']);
     }
 
@@ -148,11 +143,7 @@ class DotenvEditorTest extends TestCase
         ]);
 
         $buffer = $this->editor->getBuffer();
-        $keys = array_column(
-            array_filter($buffer, fn ($e) => $e['type'] === 'setter'),
-            'value',
-            'key'
-        );
+        $keys = array_column(array_filter($buffer, fn($e) => $e['type'] === 'setter'), 'value', 'key');
         $this->assertSame('Updated', $keys['APP_NAME']);
         $this->assertSame('hello', $keys['NEW_VAR']);
     }
@@ -162,7 +153,7 @@ class DotenvEditorTest extends TestCase
     {
         $this->editor->setKey('NEW_KEY', 'val', 'my comment');
         $buffer = $this->editor->getBuffer();
-        $entry = array_values(array_filter($buffer, fn ($e) => ($e['key'] ?? '') === 'NEW_KEY'));
+        $entry = array_values(array_filter($buffer, fn($e) => ($e['key'] ?? '') === 'NEW_KEY'));
         $this->assertSame('my comment', $entry[0]['comment']);
     }
 
@@ -171,11 +162,7 @@ class DotenvEditorTest extends TestCase
     {
         $this->editor->deleteKey('DB_PORT');
         $buffer = $this->editor->getBuffer();
-        $keys = array_column(
-            array_filter($buffer, fn ($e) => $e['type'] === 'setter'),
-            'value',
-            'key'
-        );
+        $keys = array_column(array_filter($buffer, fn($e) => $e['type'] === 'setter'), 'value', 'key');
         $this->assertArrayNotHasKey('DB_PORT', $keys);
         $this->assertTrue($this->editor->hasChanged());
     }
@@ -185,11 +172,7 @@ class DotenvEditorTest extends TestCase
     {
         $this->editor->deleteKeys(['DB_HOST', 'DB_PORT']);
         $buffer = $this->editor->getBuffer();
-        $keys = array_column(
-            array_filter($buffer, fn ($e) => $e['type'] === 'setter'),
-            'value',
-            'key'
-        );
+        $keys = array_column(array_filter($buffer, fn($e) => $e['type'] === 'setter'), 'value', 'key');
         $this->assertArrayNotHasKey('DB_HOST', $keys);
         $this->assertArrayNotHasKey('DB_PORT', $keys);
     }
@@ -345,7 +328,7 @@ class DotenvEditorTest extends TestCase
         $this->editor->setExportSetter('APP_NAME', true);
         $this->assertTrue($this->editor->hasChanged());
         $buffer = $this->editor->getBuffer();
-        $entry = array_values(array_filter($buffer, fn ($e) => ($e['key'] ?? '') === 'APP_NAME'));
+        $entry = array_values(array_filter($buffer, fn($e) => ($e['key'] ?? '') === 'APP_NAME'));
         $this->assertTrue($entry[0]['export']);
     }
 }
