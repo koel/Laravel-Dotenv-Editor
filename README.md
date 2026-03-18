@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > This is a fork from [JackieDo/Laravel-Dotenv-Editor](https://github.com/JackieDo/Laravel-Dotenv-Editor) with the sole intention of keeping compatibility with newer Laravel versions.
-> Apart from the package name (`koel/dotenv-editor`), everything is maintained as-is.
+> Unlike the original package, this fork only supports Laravel 11 and later.
 
 ![laravel-dotenv-editor](https://cloud.githubusercontent.com/assets/9862115/25982836/029612b2-370a-11e7-82c5-d9146dc914a1.png)
 
@@ -11,7 +11,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/jackiedo/dotenv-editor/v/unstable)](https://packagist.org/packages/jackiedo/dotenv-editor)
 [![License](https://poser.pugx.org/jackiedo/dotenv-editor/license)](https://packagist.org/packages/jackiedo/dotenv-editor)
 
-Laravel Dotenv Editor is the .env file editor (or files with same structure and syntax) for Laravel 5.8+. Now you can easily edit .env files with the following features:
+Laravel Dotenv Editor is the .env file editor (or files with same structure and syntax) for Laravel 11+. Now you can easily edit .env files with the following features:
 
 - Read raw content of file.
 - Read entries of file content.
@@ -27,10 +27,7 @@ Laravel Dotenv Editor is the .env file editor (or files with same structure and 
 - Manage backuped files.
 
 # Versions and compatibility
-Laravel Dotenv Editor is compatible with Laravel 5.8 and later.
-
-# Important note for the version `2.x`
-After the release of `1.2.1`, version 1.x will be discontinued in favor of a new version (version `2.x`) with some changes to be compatible with the parsing method of `vlucas/phpdotenv` package. Version `2.x` has changed quite a lot compared to the previous version. If you have used earlier versions of this package, please re-read the instructions carefully.
+Laravel Dotenv Editor is compatible with Laravel 11 and later. For older Laravel versions, use the [original package](https://github.com/JackieDo/Laravel-Dotenv-Editor).
 
 # Documentation
 Look at one of the following topics to learn more about Laravel Dotenv Editor:

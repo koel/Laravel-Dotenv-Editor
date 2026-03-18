@@ -8,8 +8,6 @@ use Jackiedo\DotenvEditor\Exceptions\FileNotFoundException;
 use Jackiedo\DotenvEditor\Exceptions\KeyNotFoundException;
 use Jackiedo\DotenvEditor\Exceptions\NoBackupAvailableException;
 use Jackiedo\DotenvEditor\Workers\Formatters\Formatter;
-use Jackiedo\DotenvEditor\Workers\Parsers\ParserV1;
-use Jackiedo\DotenvEditor\Workers\Parsers\ParserV2;
 use Jackiedo\DotenvEditor\Workers\Parsers\ParserV3;
 use Jackiedo\PathHelper\Path;
 
@@ -45,20 +43,6 @@ class DotenvEditor
      * @var Config
      */
     protected $config;
-
-    /**
-     * Compatible parser map.
-     *
-     * This map allowed select the reader parser compatible with
-     * the "vlucas/phpdotenv" package based on its version
-     *
-     * @var array
-     */
-    protected $combatibleParserMap = [
-        '5.0.0' => ParserV3::class,  // Laravel 8.x|9.x using "vlucas/dotenv" ^v5.0|^5.4
-        '4.0.0' => ParserV2::class,  // Laravel 7.x using "vlucas/dotenv" ^v4.0
-        '3.3.0' => ParserV1::class,  // Laravel 5.8|6.x using "vlucas/dotenv" ^v3.3
-    ];
 
     /**
      * The reader instance.
@@ -115,8 +99,7 @@ class DotenvEditor
         $this->app    = $app;
         $this->config = $config;
 
-        $parser       = $this->selectCompatibleParser();
-        $this->reader = new DotenvReader(new $parser);
+        $this->reader = new DotenvReader(new ParserV3);
         $this->writer = new DotenvWriter(new Formatter);
 
         self::configBackuping();
@@ -769,41 +752,4 @@ class DotenvEditor
         }
     }
 
-    /**
-     * Select the parser compatible with the "vlucas/phpdotenv" package.
-     *
-     * @return string
-     */
-    protected function selectCompatibleParser()
-    {
-        $installedDotenvVersion = $this->getDotenvPackageVersion();
-
-        uksort($this->combatibleParserMap, function ($front, $behind) {
-            return version_compare($behind, $front);
-        });
-
-        foreach ($this->combatibleParserMap as $minRequiredVersion => $compatibleParser) {
-            if (version_compare($installedDotenvVersion, $minRequiredVersion) >= 0) {
-                return $compatibleParser;
-            }
-        }
-
-        return ParserV1::class;
-    }
-
-    /**
-     * Catch version of the "vlucas/phpdotenv" package.
-     *
-     * @return string
-     */
-    protected function getDotenvPackageVersion()
-    {
-        $composerLock  = $this->app->basePath() . DIRECTORY_SEPARATOR . 'composer.lock';
-        $arrayContent  = json_decode(file_get_contents($composerLock), true);
-        $dotenvPackage = array_values(array_filter($arrayContent['packages'], function ($packageInfo, $index) {
-            return 'vlucas/phpdotenv' === $packageInfo['name'];
-        }, ARRAY_FILTER_USE_BOTH))[0];
-
-        return preg_replace('/[a-zA-Z]/', '', $dotenvPackage['version']);
-    }
 }

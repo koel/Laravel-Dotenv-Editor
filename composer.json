@@ -1,6 +1,6 @@
 {
     "name": "koel/dotenv-editor",
-    "description": "The .env file editor tool for Laravel 5.8+",
+    "description": "The .env file editor tool for Laravel 11+",
     "license": "MIT",
     "keywords": ["laravel", "dotenv", "dotenv-editor"],
     "authors": [
@@ -14,14 +14,19 @@
         }
     ],
     "require": {
-        "illuminate/console": "^12|^11|^10.0|^9.0|^8.0|^7.0|^6.0|^5.8",
-        "illuminate/contracts": "^12|^11|^10.0|^9.0|^8.0|^7.0|^6.0|^5.8",
-        "illuminate/support": "^12|^11|^10.0|^9.0|^8.0|^7.0|^6.0|^5.8",
+        "illuminate/console": "^13|^12|^11",
+        "illuminate/contracts": "^13|^12|^11",
+        "illuminate/support": "^13|^12|^11",
         "jackiedo/path-helper": "^1.0"
     },
     "autoload": {
         "psr-4": {
             "Jackiedo\\DotenvEditor\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jackiedo\\DotenvEditor\\Tests\\": "tests"
         }
     },
     "extra": {
@@ -37,5 +42,9 @@
             }
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "^11.5|^12.0",
+        "orchestra/testbench": "^9.0|^10.0|^11.0"
+    }
 }
