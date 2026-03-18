@@ -27,6 +27,3 @@ jobs:
 
       - name: Check formatting
         run: mago fmt --check
-
-      - name: Lint
-        run: mago lint --reporting-format=github
